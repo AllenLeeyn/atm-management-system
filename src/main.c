@@ -17,7 +17,8 @@ void mainMenu(struct User u)
     printf("\n\t\t[6]- Remove existing account\n");
     printf("\n\t\t[7]- Transfer ownership\n");
     printf("\n\t\t[8]- Exit\n");
-    scanf("%d", &option);
+
+    option = inputInt("\n\t\tSelect option: ", 1, 8);
 
     switch (option)
     {
@@ -67,14 +68,12 @@ int initMenu(struct User *u)
     printf("\n\t\t[3]- exit\n");
     while (!r)
     {
-        scanf("%d", &option);
+        
+        option = inputInt("\n\t\tSelect option: ", 1, 3);
         switch (option)
         {
         case 1:
             loginMenu(u->name, u->pw);
-            //printf("%s", u->name);
-            //printf("%s", u->pw);
-            
             if (strcmp(u->pw, getPassword(u)) == 0)
             {
                 printf("\n\nPassword Match!");
@@ -88,8 +87,6 @@ int initMenu(struct User *u)
             break;
         case 2:
             registerMenu(u->name, u->pw);
-            printf("%s", u->name);
-            printf("%s", u->pw);
             if (strcmp(u->name, getUserName(u)) == 0)
             {
                 printf("\nUser exists! Try a different Name.");

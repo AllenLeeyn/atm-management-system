@@ -1,13 +1,12 @@
 #include <termios.h>
 #include "header.h"
 
-void registerMenu(char name[50], char pw[50])
+void registerMenu(char *name, char *pw)
 {
     struct termios oflags, nflags;
 
     system("clear");
-    printf("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t     User Registration:");
-    scanf("%s", name);
+    inputString("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t     User Registration:", name, 50);
 
     // disabling echo
     tcgetattr(fileno(stdin), &oflags);
@@ -20,8 +19,7 @@ void registerMenu(char name[50], char pw[50])
         perror("tcsetattr");
         return exit(1);
     }
-    printf("\n\n\n\n\n\t\t\t\tEnter the password to register:");
-    scanf("%s", pw);
+    inputString("\n\n\n\n\n\t\t\t\tEnter the password to register:", pw, 50);
 
     // restore terminal
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
@@ -70,10 +68,10 @@ int getUserId()
 void saveUserToFile(struct User *u)
 {
     FILE *fp = openFileOrExit(USERS, "a+");
-    int newId = getUserId();
+    u->id = getUserId();
 
     fprintf(fp, "%d %s %s\n",
-        newId,
+        u->id,
         u->name,
         u->pw);
 

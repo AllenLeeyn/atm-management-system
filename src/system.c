@@ -1,5 +1,22 @@
 #include "header.h"
 
+int getAccId()
+{
+    FILE *fp = openFileOrExit(RECORDS, "r");
+    int count = 0;
+    char buffer[256];
+
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        // Check if this buffer contains a newline
+        if (strchr(buffer, '\n') != NULL) {
+            count++;
+        }
+    }
+
+    fclose(fp);
+    return count;
+}
+
 int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
 {
     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %d %lf %s",
@@ -18,7 +35,9 @@ int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
 
 void saveAccountToFile(FILE *ptr, struct User *u, struct Record *r)
 {
-    fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
+    r->id = getAccId();
+
+    fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n",
         r->id,
         u->id,
         u->name,
@@ -105,10 +124,8 @@ noAccount:
     system("clear");
     printf("\t\t\t===== New record =====\n");
 
-    printf("\nEnter today's date(mm/dd/yyyy):");
-    scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
-    printf("\nEnter the account number:");
-    scanf("%d", &r.accNum);
+    r.deposit = inputDate("\nEnter today's date (mm/dd/yyyy): ");
+    r.accNum = inputInt("\nEnter the account number: ", 1, 99999999);
 
     while (getAccountFromFile(fp, userName, &cr))
     {
@@ -118,14 +135,11 @@ noAccount:
             goto noAccount;
         }
     }
-    printf("\nEnter the country:");
-    scanf("%s", r.country);
-    printf("\nEnter the phone number:");
-    scanf("%d", &r.phone);
-    printf("\nEnter amount to deposit: $");
-    scanf("%lf", &r.amount);
-    printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
-    scanf("%s", r.accTyp);
+    inputString("\nEnter the country: ", r.country, sizeof(r.country));
+    r.phone = inputInt("\nEnter the phone number: ", 1000000, 999999999);  // adjust limits
+    r.amount = inputDouble("\nEnter amount to deposit: $", 0.01, 1000000.0);
+    inputAccType("\nChoose the type of account:\n\t-> savings\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:", 
+        r.accTyp);
 
     saveAccountToFile(fp, &u, &r);
 

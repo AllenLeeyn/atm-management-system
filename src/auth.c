@@ -1,13 +1,12 @@
 #include <termios.h>
 #include "header.h"
 
-void loginMenu(char name[50], char pw[50])
+void loginMenu(char *name, char *pw)
 {
     struct termios oflags, nflags;
 
     system("clear");
-    printf("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t\t User Login:");
-    scanf("%s", name);
+    inputString("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t\t User Login:", name, 50);
 
     // disabling echo
     tcgetattr(fileno(stdin), &oflags);
@@ -20,8 +19,7 @@ void loginMenu(char name[50], char pw[50])
         perror("tcsetattr");
         return exit(1);
     }
-    printf("\n\n\n\n\n\t\t\t\tEnter the password to login:");
-    scanf("%s", pw);
+    inputString("\n\n\n\n\n\t\t\t\tEnter the password to login:", pw, 50);
 
     // restore terminal
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
@@ -41,6 +39,7 @@ const char *getPassword(struct User *u)
         if (strcmp(userX.name, u->name) == 0)
         {
             fclose(fp);
+            u->id = userX.id;
             char *buff = userX.pw;
             return buff;
         }
