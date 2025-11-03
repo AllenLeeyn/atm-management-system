@@ -1,8 +1,7 @@
 #include <termios.h>
 #include "header.h"
 
-void registerMenu(char *name, char *pw)
-{
+void registerMenu(char *name, char *pw) {
     struct termios oflags, nflags;
 
     system("clear");
@@ -29,8 +28,7 @@ void registerMenu(char *name, char *pw)
     }
 };
 
-const char *getUserName(struct User *u)
-{
+const char *getUserName(struct User *u) {
     FILE *fp = openFileOrExit(USERS, "r");
     struct User userX;
 
@@ -48,8 +46,7 @@ const char *getUserName(struct User *u)
     return "no user found";
 }
 
-int getUserId()
-{
+int getUserId() {
     FILE *fp = openFileOrExit(USERS, "r");
     int count = 0;
     char buffer[256];
@@ -65,8 +62,7 @@ int getUserId()
     return count;
 }
 
-void saveUserToFile(struct User *u)
-{
+void saveUserToFile(struct User *u) {
     FILE *fp = openFileOrExit(USERS, "a+");
     u->id = getUserId();
 

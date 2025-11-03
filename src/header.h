@@ -45,6 +45,7 @@ void saveUserToFile(struct User *u);
 void createNewAcc(struct User u);
 void mainMenu(struct User u);
 void checkAllAccounts(struct User u);
+void checkAccount(struct User u);
 
 // input validation function
 int inputInt(const char *prompt, int min, int max);

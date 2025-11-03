@@ -3,8 +3,7 @@
 const char *USERS = "./data/users.txt";
 const char *RECORDS = "./data/records.txt";
 
-void mainMenu(struct User u)
-{
+void mainMenu(struct User u) {
     int option;
     system("clear");
     printf("\n\n\t\t======= ATM =======\n\n");
@@ -30,8 +29,7 @@ void mainMenu(struct User u)
         // here
         break;
     case 3:
-        // student TODO : add your **Check the details of existing accounts** function
-        // here
+        checkAccount(u);
         break;
     case 4:
         checkAllAccounts(u);
@@ -56,8 +54,7 @@ void mainMenu(struct User u)
     }
 };
 
-int initMenu(struct User *u)
-{
+int initMenu(struct User *u) {
     int r = 0;
     int option;
     system("clear");
@@ -110,8 +107,7 @@ int initMenu(struct User *u)
     return 1;
 };
 
-int main()
-{
+int main() {
     struct User u;
     
     initMenu(&u);

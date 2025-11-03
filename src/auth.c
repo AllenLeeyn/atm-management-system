@@ -1,8 +1,7 @@
 #include <termios.h>
 #include "header.h"
 
-void loginMenu(char *name, char *pw)
-{
+void loginMenu(char *name, char *pw) {
     struct termios oflags, nflags;
 
     system("clear");
@@ -29,8 +28,7 @@ void loginMenu(char *name, char *pw)
     }
 };
 
-const char *getPassword(struct User *u)
-{
+const char *getPassword(struct User *u) {
     FILE *fp = openFileOrExit(USERS, "r");
     struct User userX;
 
