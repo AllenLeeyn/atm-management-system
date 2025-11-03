@@ -1,8 +1,6 @@
 #include <termios.h>
 #include "header.h"
 
-char *USERS = "./data/users.txt";
-
 void loginMenu(char name[50], char pw[50])
 {
     struct termios oflags, nflags;
@@ -33,7 +31,7 @@ void loginMenu(char name[50], char pw[50])
     }
 };
 
-const char *getPassword(struct User u)
+const char *getPassword(struct User *u)
 {
     FILE *fp;
     struct User userX;
@@ -46,7 +44,7 @@ const char *getPassword(struct User u)
 
     while (fscanf(fp, "%d %s %s", &userX.id, userX.name, userX.pw) != EOF)
     {
-        if (strcmp(userX.name, u.name) == 0)
+        if (strcmp(userX.name, u->name) == 0)
         {
             fclose(fp);
             char *buff = userX.pw;

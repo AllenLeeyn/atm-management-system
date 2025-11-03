@@ -52,7 +52,7 @@ void mainMenu(struct User u)
     }
 };
 
-void initMenu(struct User *u)
+int initMenu(struct User *u)
 {
     int r = 0;
     int option;
@@ -69,10 +69,10 @@ void initMenu(struct User *u)
         {
         case 1:
             loginMenu(u->name, u->pw);
-            printf("%s", u->name);
-            printf("%s", u->pw);
+            //printf("%s", u->name);
+            //printf("%s", u->pw);
             
-            if (strcmp(u->pw, getPassword(*u)) == 0)
+            if (strcmp(u->pw, getPassword(u)) == 0)
             {
                 printf("\n\nPassword Match!");
             }
@@ -84,10 +84,22 @@ void initMenu(struct User *u)
             r = 1;
             break;
         case 2:
-            // student TODO : add your **Registration** function
-            // here
+            registerMenu(u->name, u->pw);
+            printf("%s", u->name);
+            printf("%s", u->pw);
+            if (strcmp(u->name, getUserName(u)) == 0)
+            {
+                printf("\nUser exists! Try a different Name.");
+                exit(1);
+            }
+            else
+            {
+                saveUserToFile(u);
+            }
             r = 1;
             break;
+
+            exit(1);
         case 3:
             exit(1);
             break;
@@ -95,6 +107,7 @@ void initMenu(struct User *u)
             printf("Insert a valid operation!\n");
         }
     }
+    return 1;
 };
 
 int main()
