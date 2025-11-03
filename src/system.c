@@ -17,7 +17,7 @@ int getAccId()
     return count;
 }
 
-int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
+int getAccountFromFile(FILE *ptr, char *name, struct Record *r)
 {
     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %d %lf %s",
         &r->id,
@@ -116,22 +116,25 @@ invalid:
 void createNewAcc(struct User u)
 {
     FILE *fp = openFileOrExit(RECORDS, "a+");
+    rewind(fp);
     struct Record r;
     struct Record cr;
     char userName[50];
+    char msg[128] = "";
 
 noAccount:
     system("clear");
     printf("\t\t\t===== New record =====\n");
+    printf("%s", msg);
 
     r.deposit = inputDate("\nEnter today's date (mm/dd/yyyy): ");
-    r.accNum = inputInt("\nEnter the account number: ", 1, 99999999);
+    r.accNum = inputInt("\nEnter the account number: ", 0, 99999999);
 
     while (getAccountFromFile(fp, userName, &cr))
     {
         if (strcmp(userName, u.name) == 0 && cr.accNum == r.accNum)
         {
-            printf("✖ This Account already exists for this user\n\n");
+            sprintf(msg, "\n✖ [%s:%d] already exists.\n", u.name, r.accNum);
             goto noAccount;
         }
     }
@@ -150,8 +153,9 @@ noAccount:
 void checkAllAccounts(struct User u)
 {
     FILE *fp = openFileOrExit(RECORDS, "r");
-    char userName[100];
+    char userName[50];
     struct Record r;
+    int found = 0;
 
     system("clear");
     printf("\t\t====== All accounts from user, %s =====\n\n", u.name);
@@ -159,8 +163,9 @@ void checkAllAccounts(struct User u)
     {
         if (strcmp(userName, u.name) == 0)
         {
+            found = 1;
             printf("_____________________\n");
-            printf("\nAccount number:%d\nDeposit Date:%d/%d/%d \ncountry:%s \nPhone number:%d \nAmount deposited: $%.2f \nType Of Account:%s\n",
+            printf("\nAccount number: \t%d\nDeposit Date: \t\t%d/%d/%d \ncountry: \t\t%s \nPhone number: \t\t%d \nAmount deposited: \t$%.2f \nType Of Account: \t%s\n",
                    r.accNum,
                    r.deposit.day,
                    r.deposit.month,
@@ -170,6 +175,9 @@ void checkAllAccounts(struct User u)
                    r.amount,
                    r.accTyp);
         }
+    }
+    if (!found) {
+        printf("No accounts found for user %s.\n", u.name);
     }
     fclose(fp);
     success(u);
