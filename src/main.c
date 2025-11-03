@@ -1,5 +1,8 @@
 #include "header.h"
 
+const char *USERS = "./data/users.txt";
+const char *RECORDS = "./data/records.txt";
+
 void mainMenu(struct User u)
 {
     int option;

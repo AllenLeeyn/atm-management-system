@@ -33,14 +33,8 @@ void loginMenu(char name[50], char pw[50])
 
 const char *getPassword(struct User *u)
 {
-    FILE *fp;
+    FILE *fp = openFileOrExit(USERS, "r");
     struct User userX;
-
-    if ((fp = fopen("./data/users.txt", "r")) == NULL)
-    {
-        printf("Error! opening file");
-        exit(1);
-    }
 
     while (fscanf(fp, "%d %s %s", &userX.id, userX.name, userX.pw) != EOF)
     {

@@ -1,8 +1,6 @@
 #include <termios.h>
 #include "header.h"
 
-char *USERS = "./data/users.txt";
-
 void registerMenu(char name[50], char pw[50])
 {
     struct termios oflags, nflags;
@@ -35,14 +33,8 @@ void registerMenu(char name[50], char pw[50])
 
 const char *getUserName(struct User *u)
 {
-    FILE *fp;
+    FILE *fp = openFileOrExit(USERS, "r");
     struct User userX;
-
-    if ((fp = fopen(USERS, "r")) == NULL)
-    {
-        printf("Error! opening file");
-        exit(1);
-    }
 
     while (fscanf(fp, "%d %s %s", &userX.id, userX.name, userX.pw) != EOF)
     {
@@ -60,15 +52,9 @@ const char *getUserName(struct User *u)
 
 int getUserId()
 {
-    FILE *fp;
+    FILE *fp = openFileOrExit(USERS, "r");
     int count = 0;
     char buffer[256];
-
-    if ((fp = fopen(USERS, "r")) == NULL)
-    {
-        printf("Error! opening file");
-        exit(1);
-    }
 
     while (fgets(buffer, sizeof(buffer), fp) != NULL) {
         // Check if this buffer contains a newline
@@ -83,13 +69,7 @@ int getUserId()
 
 void saveUserToFile(struct User *u)
 {
-    FILE *fp;
-    if ((fp = fopen(USERS, "a+")) == NULL)
-    {
-        printf("Error! opening file");
-        exit(1);
-    }
-
+    FILE *fp = openFileOrExit(USERS, "a+");
     int newId = getUserId();
 
     fprintf(fp, "%d %s %s\n",

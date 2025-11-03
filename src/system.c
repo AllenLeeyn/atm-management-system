@@ -1,7 +1,5 @@
 #include "header.h"
 
-const char *RECORDS = "./data/records.txt";
-
 int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
 {
     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %d %lf %s",
@@ -98,10 +96,10 @@ invalid:
 
 void createNewAcc(struct User u)
 {
+    FILE *fp = openFileOrExit(RECORDS, "a+");
     struct Record r;
     struct Record cr;
     char userName[50];
-    FILE *pf = fopen(RECORDS, "a+");
 
 noAccount:
     system("clear");
@@ -112,7 +110,7 @@ noAccount:
     printf("\nEnter the account number:");
     scanf("%d", &r.accNum);
 
-    while (getAccountFromFile(pf, userName, &cr))
+    while (getAccountFromFile(fp, userName, &cr))
     {
         if (strcmp(userName, u.name) == 0 && cr.accNum == r.accNum)
         {
@@ -129,22 +127,21 @@ noAccount:
     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
     scanf("%s", r.accTyp);
 
-    saveAccountToFile(pf, &u, &r);
+    saveAccountToFile(fp, &u, &r);
 
-    fclose(pf);
+    fclose(fp);
     success(u);
 }
 
 void checkAllAccounts(struct User u)
 {
+    FILE *fp = openFileOrExit(RECORDS, "r");
     char userName[100];
     struct Record r;
 
-    FILE *pf = fopen(RECORDS, "r");
-
     system("clear");
     printf("\t\t====== All accounts from user, %s =====\n\n", u.name);
-    while (getAccountFromFile(pf, userName, &r))
+    while (getAccountFromFile(fp, userName, &r))
     {
         if (strcmp(userName, u.name) == 0)
         {
@@ -160,6 +157,6 @@ void checkAllAccounts(struct User u)
                    r.accTyp);
         }
     }
-    fclose(pf);
+    fclose(fp);
     success(u);
 }

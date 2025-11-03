@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern const char *USERS;
+extern const char *RECORDS;
+
 struct Date
 {
     int month, day, year;
@@ -28,6 +31,8 @@ struct User
     char name[50];
     char pw[50];
 };
+
+FILE *openFileOrExit(const char *filename, const char *mode);
 
 // authentication functions
 void loginMenu(char name[50], char pw[50]);
