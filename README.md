@@ -11,13 +11,18 @@ a project from scratch, instead you will have **to add features or fix the code 
 
 You will be provided with an ATM management system where users can do the following actions:
 
-- Login/Register
-- Create a new account
-- Check the details of existing accounts
-- Update information of existing accounts
-- Remove existing accounts
-- Check list of owned accounts
-- Make transactions
+```
+[o] Login/Register
+[o] Create a new account
+[o] Check the details of existing accounts
+[ ] Update information of existing accounts
+[ ] Checking the details of existing accounts 
+[ ] Remove existing accounts
+[ ] Check list of owned accounts
+[ ] Make transactions
+[ ] Remove existing account
+[ ] Transfer owner
+````
 
 > The application provided will just handle the **login**, the **creation of new accounts** and **checking the list of owned accounts** but you can optimise and refactor the code. The rest of the features must
 > be implemented by yourself.
