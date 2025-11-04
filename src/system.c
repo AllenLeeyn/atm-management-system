@@ -128,7 +128,7 @@ void printAccountInterest(struct Record r) {
     }
     
     if (strcmp(r.accTyp, "savings") == 0) {
-        double monthlyInterest = ceil((r.amount * 0.07 / 12.0) * 100.0) / 100.0;
+        double monthlyInterest = r.amount * 0.07 / 12.0;
         snprintf(msg, sizeof(msg),
                  "You will get $%.2f as interest on day %d of every month.",
                  monthlyInterest, r.deposit.day);
@@ -149,7 +149,7 @@ void printAccountInterest(struct Record r) {
     }
     double monthlyInterest = ceil((interest / 12.0) * 100.0) / 100.0;
 
-    interest = ceil((r.amount * rate) * 100.0) / 100.0;
+    interest = r.amount * rate * termYears;
     int maturityYear = r.deposit.year + termYears;
 
     snprintf(msg, sizeof(msg),
@@ -262,7 +262,6 @@ void deleteAccount(struct User u) {
     int accNum;
     int found = 0;
     struct User deletedUser;
-
 
     system("clear");
     accNum = inputInt("\n\t\tEnter account number: ", 0, 99999999);
