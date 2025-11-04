@@ -256,3 +256,48 @@ void makeTransaction(struct User u) {
     }
     stayOrReturn("\n✖ Record not found!!\n", found, makeTransaction, u);
 }
+
+void deleteAccount(struct User u) {
+    struct Record r;
+    int accNum;
+    int found = 0;
+    struct User deletedUser;
+
+
+    system("clear");
+    accNum = inputInt("\n\t\tEnter account number: ", 0, 99999999);
+
+    found = findAccount(u, accNum, &r);
+    if (found) {
+        printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
+        printAccountDeatil(r);
+
+        int choice = displayMenu(
+            "Are you sure you want to delete this account?",
+            (const char*[]){"Yes", "No"}, 
+            2
+        );
+
+        if (choice == 1) {
+            int confirm = displayMenu(
+                "Process cannot be undone. Confirm deletion:",
+                (const char*[]){"Yes", "No"}, 
+                2
+            );
+
+            if (confirm == 1) {
+                deletedUser.id = -1;
+                strcpy(deletedUser.name, "---");
+                r.accNum = -1;
+
+                if (UpdateAccountToFile(RECORDS, &deletedUser, &r)) {
+                    printf("\n✔ Account deleted successfully!\n");
+                } else {
+                    printf("\n✖ Failed to delete account!\n");
+                }
+            }
+
+        }
+    }
+    stayOrReturn("\n✖ Record not found!!\n", found, deleteAccount, u);
+}

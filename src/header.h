@@ -53,6 +53,7 @@ void checkAllAccounts(struct User u);
 void checkAccount(struct User u);
 void updateAccount(struct User u);
 void makeTransaction(struct User u);
+void deleteAccount(struct User u);
 
 // input validation function
 int displayMenu(const char *title, const char *options[], int numOptions);
