@@ -1,4 +1,13 @@
 #include "header.h"
+#include <ctype.h> 
+
+int displayMenu(const char *title, const char *options[], int numOptions) {
+    printf("\n\n\t\t======= %s =======\n\n", title);
+    for (int i = 0; i < numOptions; i++) {
+        printf("\n\t\t[%d]- %s\n", i + 1, options[i]);
+    }
+    return inputInt("\n\t\tSelect option: ", 1, numOptions);
+}
 
 // Parser function type
 typedef int (*ParserFunc)(const char *input, void *out);
@@ -81,34 +90,6 @@ int parseDate(const char *input, void *out) {
     return 1;
 }
 
-const char *validAccTypes[] = {
-    "savings",
-    "current",
-    "fixed01",
-    "fixed02",
-    "fixed03"
-};
-const int nAccTypes = sizeof(validAccTypes) / sizeof(validAccTypes[0]);
-
-int parseAccType(const char *input, void *out) {
-    char buffer[9];
-    // remove newline
-    if (sscanf(input, "%8s", buffer) != 1)
-        return 0;
-
-    if (strlen(buffer) != 7)
-        return 0;
-
-    for (int i = 0; i < nAccTypes; i++) {
-        if (strcmp(buffer, validAccTypes[i]) == 0) {
-            strcpy((char *)out, buffer);
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 /*<--------------------- iput<type> functions -------------------->*/
 int inputInt(const char *prompt, int min, int max) {
     int value;
@@ -148,9 +129,11 @@ void inputString(const char *prompt, char *dest, int maxLen) {
         if (len > 0 && dest[len-1] == '\n') {
             dest[len-1] = '\0';
         }
-    }
-}
 
-void inputAccType(const char *prompt, char *accType) {
-    inputGeneric(prompt, accType, parseAccType);
+        for (size_t i = 0; i < strlen(dest); i++) {
+            if (isspace((unsigned char)dest[i])) {
+                dest[i] = '_';
+            }
+        }
+    }
 }

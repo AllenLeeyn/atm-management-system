@@ -32,7 +32,11 @@ struct User
     char pw[50];
 };
 
+// file functions
+int getAccountFromFile(FILE *ptr, char *name, struct Record *r);
+void saveAccountToFile(FILE *ptr, struct User *u, struct Record *r);
 FILE *openFileOrExit(const char *filename, const char *mode);
+int UpdateAccountToFile(const char *filename, struct User *u, struct Record *r);
 
 // authentication functions
 void loginMenu(char *name, char *pw);
@@ -46,11 +50,12 @@ void createNewAcc(struct User u);
 void mainMenu(struct User u);
 void checkAllAccounts(struct User u);
 void checkAccount(struct User u);
+void updateAccount(struct User u);
 
 // input validation function
+int displayMenu(const char *title, const char *options[], int numOptions);
 int inputInt(const char *prompt, int min, int max);
 double inputDouble(const char *prompt, double min, double max);
 struct Date inputDate(const char *prompt);
 void inputString(const char *prompt, char *dest, int maxLen);
-void inputAccType(const char *prompt, char *accType);
 //int inputYesNo(const char *prompt);
