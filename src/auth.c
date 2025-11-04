@@ -46,3 +46,23 @@ const char *getPassword(struct User *u) {
     fclose(fp);
     return "no user found";
 }
+
+int isValidUser(struct User *u) {
+    FILE *fp = fopen(USERS, "r");
+    if (!fp) {
+        perror("Failed to open users file");
+        return 0;
+    }
+
+    struct User temp;
+    while (fscanf(fp, "%d %49s %49s", &temp.id, temp.name, temp.pw) != EOF) {
+        if (temp.id == u->id && strcmp(temp.name, u->name) == 0) {
+            // Match found
+            fclose(fp);
+            return 1;
+        }
+    }
+
+    fclose(fp);
+    return 0;  // No match
+}

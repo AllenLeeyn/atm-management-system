@@ -301,3 +301,52 @@ void deleteAccount(struct User u) {
     }
     stayOrReturn("\n✖ Record not found!!\n", found, deleteAccount, u);
 }
+
+void transferOwnership(struct User u) {
+    struct Record r;
+    int accNum;
+    int found = 0;
+    struct User targetUser;
+
+    system("clear");
+    accNum = inputInt("\n\t\tEnter account number: ", 0, 99999999);
+
+    found = findAccount(u, accNum, &r);
+    if (found) {
+        printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
+        printAccountDeatil(r);
+
+        targetUser.id = inputInt("\nEnter reciepent userID: ", 0, 99999999);
+        inputString("\nEnter reciepent userName: ", targetUser.name, sizeof(targetUser.name));
+
+
+        if (!isValidUser(&targetUser)) {
+            printf("\n✖ Recipient user not found or invalid!\n");
+            stayOrReturn("", 0, transferOwnership, u);
+            return;
+        }
+        
+        int choice = displayMenu(
+            "Are you sure you want to transfer this account?",
+            (const char*[]){"Yes", "No"}, 
+            2
+        );
+
+        if (choice == 1) {
+            int confirm = displayMenu(
+                "Process cannot be undone. Confirm transfer:",
+                (const char*[]){"Yes", "No"}, 
+                2
+            );
+
+            if (confirm == 1) {
+                if (UpdateAccountToFile(RECORDS, &targetUser, &r)) {
+                    printf("\n✔ Account transferred successfully!\n");
+                } else {
+                    printf("\n✖ Failed to transfer account!\n");
+                }
+            }
+        }
+    }
+    stayOrReturn("\n✖ Record not found!!\n", found, transferOwnership, u);
+}

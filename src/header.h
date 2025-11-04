@@ -41,19 +41,23 @@ int UpdateAccountToFile(const char *filename, struct User *u, struct Record *r);
 
 // authentication functions
 void loginMenu(char *name, char *pw);
-void registerMenu(char *name, char *pw);
 const char *getPassword(struct User *u);
+int isValidUser(struct User *u);
+
+//registration functions
+void registerMenu(char *name, char *pw);
 const char *getUserName(struct User *u);
 void saveUserToFile(struct User *u);
 
 // system function
-void createNewAcc(struct User u);
 void mainMenu(struct User u);
+void createNewAcc(struct User u);
 void checkAllAccounts(struct User u);
 void checkAccount(struct User u);
 void updateAccount(struct User u);
 void makeTransaction(struct User u);
 void deleteAccount(struct User u);
+void transferOwnership(struct User u);
 
 // input validation function
 int displayMenu(const char *title, const char *options[], int numOptions);
@@ -61,4 +65,3 @@ int inputInt(const char *prompt, int min, int max);
 double inputDouble(const char *prompt, double min, double max);
 struct Date inputDate(const char *prompt);
 void inputString(const char *prompt, char *dest, int maxLen);
-//int inputYesNo(const char *prompt);
