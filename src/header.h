@@ -36,6 +36,7 @@ struct User
 int getAccountFromFile(FILE *ptr, char *name, struct Record *r);
 void saveAccountToFile(FILE *ptr, struct User *u, struct Record *r);
 FILE *openFileOrExit(const char *filename, const char *mode);
+int findAccount(struct User u, int accNum, struct Record *result);
 int UpdateAccountToFile(const char *filename, struct User *u, struct Record *r);
 
 // authentication functions
@@ -51,6 +52,7 @@ void mainMenu(struct User u);
 void checkAllAccounts(struct User u);
 void checkAccount(struct User u);
 void updateAccount(struct User u);
+void makeTransaction(struct User u);
 
 // input validation function
 int displayMenu(const char *title, const char *options[], int numOptions);

@@ -57,6 +57,22 @@ FILE *openFileOrExit(const char *filename, const char *mode) {
     return fp;
 }
 
+int findAccount(struct User u, int accNum, struct Record *result) {
+    FILE *fp = openFileOrExit(RECORDS, "r");
+    char userName[50];
+    int found = 0;
+
+    while (getAccountFromFile(fp, userName, result)) {
+        if (strcmp(userName, u.name) == 0 && accNum == result->accNum) {
+            found = 1;
+            break;
+        }
+    }
+
+    fclose(fp);
+    return found;
+}
+
 int overwriteFileLine(const char *filename, int entryNum, const char *newContent) {
     FILE *src = openFileOrExit(filename, "r");
     FILE *tmp = openFileOrExit("temp.txt", "w");

@@ -14,12 +14,10 @@ You will be provided with an ATM management system where users can do the follow
 ```
 [o] Login/Register
 [o] Create a new account
+[o] Check list of owned accounts
 [o] Check the details of existing accounts
-[o] Checking the details of existing accounts 
 [o] Update information of existing accounts
-[ ] Remove existing accounts
-[ ] Check list of owned accounts
-[ ] Make transactions
+[o] Make transactions
 [ ] Remove existing account
 [ ] Transfer owner
 ````

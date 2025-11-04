@@ -130,10 +130,15 @@ void inputString(const char *prompt, char *dest, int maxLen) {
             dest[len-1] = '\0';
         }
 
-        for (size_t i = 0; i < strlen(dest); i++) {
-            if (isspace((unsigned char)dest[i])) {
-                dest[i] = '_';
+        size_t j = 0;
+        for (size_t i = 0; dest[i] != '\0'; i++) {
+            unsigned char c = dest[i];
+            if (isspace(c)) {
+                dest[j++] = '_';
+            } else if (isprint(c)) {
+                dest[j++] = c;
             }
         }
+        dest[j] = '\0';
     }
 }

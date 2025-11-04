@@ -1,25 +1,25 @@
 #include "header.h"
 #include <math.h> 
 
-void stayOrReturn(int notGood, void f(struct User u), struct User u) {
+void stayOrReturn(char *msg, int notGood, void f(struct User u), struct User u) {
     int option;
 
     if (notGood == 0) {
-        printf("\n✖ Record not found!!\n");
-        option = inputInt("\nEnter 0 to try again, 1 to return to main menu, 2 to exit: ", 0, 2);
+        printf("%s", msg);
+        option = inputInt("\nEnter 1 to try again, 2 to return to main menu, 0 to exit: ", 0, 2);
         switch (option) {
-            case 0: 
+            case 1: 
                 f(u); 
                 break;
-            case 1: 
+            case 2: 
                 mainMenu(u); 
                 break;
-            case 2: 
+            case 0: 
                 exit(0);
         }
 
     } else {
-        option = inputInt("\nEnter 1 to go to the main menu and 0 to exit: ", 0, 1);
+        option = inputInt("\nEnter 1 to go to the main menu and 0 to exit: ", 1, 2);
         switch (option) {
             case 1:
                 mainMenu(u);
@@ -34,7 +34,7 @@ void stayOrReturn(int notGood, void f(struct User u), struct User u) {
 void success(struct User u) {
     int option; 
     printf("\n✔ Success!\n\n");
-invalid:
+
     option = inputInt("Enter 1 to go to the main menu and 0 to exit!\n", 0, 1);
     system("clear");
     switch (option) {
@@ -56,39 +56,33 @@ const char *validAccTypes[] = {
 };
 
 void createNewAcc(struct User u) {
-    FILE *fp = openFileOrExit(RECORDS, "a+");
-    rewind(fp);
     struct Record r;
-    struct Record cr;
-    char userName[50];
     char msg[128] = "";
 
-noAccount:
     system("clear");
     printf("\t\t\t===== New record =====\n");
-    printf("%s", msg);
 
     r.deposit = inputDate("\nEnter today's date (mm/dd/yyyy): ");
     r.accNum = inputInt("\nEnter the account number: ", 0, 99999999);
 
-    while (getAccountFromFile(fp, userName, &cr))
-    {
-        if (strcmp(userName, u.name) == 0 && cr.accNum == r.accNum)
-        {
-            sprintf(msg, "\n✖ [%s:%d] already exists.\n", u.name, r.accNum);
-            goto noAccount;
-        }
+    struct Record existing;
+    int canProceed = !findAccount(u, r.accNum, &existing);
+    if (!canProceed) {
+        sprintf(msg, "\n✖ [%s:%d] already exists.\n", u.name, r.accNum);
+
+    } else {
+        inputString("\nEnter the country: ", r.country, sizeof(r.country));
+        r.phone = inputInt("\nEnter the phone number: ", 1000000, 999999999);
+        r.amount = inputDouble("\nEnter amount to deposit: $", 0.01, 1000000.0);
+        int accType = displayMenu("Choose the type of account:", validAccTypes, 5) -1;
+        strcpy(r.accTyp, validAccTypes[accType]);
+
+        FILE *fp = openFileOrExit(RECORDS, "a+");
+        saveAccountToFile(fp, &u, &r);
+        fclose(fp);
     }
-    inputString("\nEnter the country: ", r.country, sizeof(r.country));
-    r.phone = inputInt("\nEnter the phone number: ", 1000000, 999999999);  // adjust limits
-    r.amount = inputDouble("\nEnter amount to deposit: $", 0.01, 1000000.0);
-    int accType = displayMenu("Choose the type of account:", validAccTypes, 5) -1;
-    strcpy(r.accTyp, validAccTypes[accType]);
 
-    saveAccountToFile(fp, &u, &r);
-
-    fclose(fp);
-    success(u);
+    stayOrReturn(msg, canProceed, createNewAcc, u);
 }
 
 void printAccountDeatil(struct Record r) {
@@ -121,7 +115,7 @@ void checkAllAccounts(struct User u) {
         }
     }
     fclose(fp);
-    stayOrReturn(found, checkAllAccounts, u);
+    stayOrReturn("\n✖ Records not found!!\n", found, checkAllAccounts, u);
 }
 
 void printAccountInterest(struct Record r) {
@@ -165,59 +159,92 @@ void printAccountInterest(struct Record r) {
 }
 
 void checkAccount(struct User u) {
-    FILE *fp = openFileOrExit(RECORDS, "r");
-
     struct Record r;
-    char userName[50];
     int accNum;
     int found = 0;
+    
     system("clear");
     accNum = inputInt("\n\t\tEnter account number: ", 0, 99999999);
-    while (getAccountFromFile(fp, userName, &r))
-    {
-        if (strcmp(userName, u.name) == 0 && accNum == r.accNum)
-        {
-            printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
-            found = 1;
-            printAccountDeatil(r);
-            printAccountInterest(r);
-            break;
-            
-        }
+
+    found = findAccount(u, accNum, &r);
+    if (found) {
+        printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
+        printAccountDeatil(r);
+        printAccountInterest(r);
     }
-    fclose(fp);
-    stayOrReturn(found, checkAccount, u);
+
+    stayOrReturn("\n✖ Record not found!!\n", found, checkAccount, u);
 }
 
 void updateAccount(struct User u) {
-    FILE *fp = openFileOrExit(RECORDS, "r");
-
     struct Record r;
-    char userName[50];
     int accNum;
     int found = 0;
+
     system("clear");
     accNum = inputInt("\n\t\tEnter account number: ", 0, 99999999);
 
-    while (getAccountFromFile(fp, userName, &r))
-    {
-        if (strcmp(userName, u.name) == 0 && accNum == r.accNum)
-        {
-            printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
-            found = 1;
-            printAccountDeatil(r);
-            printAccountInterest(r);
+    found = findAccount(u, accNum, &r);
+    if (found) {
+        printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
+        printAccountDeatil(r);
+        printAccountInterest(r);
 
+        int choice = displayMenu(
+            "Which field do you want to update?",
+            (const char*[]){"Country", "Phone Number"}, 
+            2
+        );
+
+        if (choice == 1) {  // Country
+            inputString("\nEnter new country: ", r.country, sizeof(r.country));
+        } else if (choice == 2) {  // Phone
+            r.phone = inputInt("\nEnter new phone number: ", 1000000, 999999999);
+        }
+
+        if (UpdateAccountToFile(RECORDS, &u, &r)) {
+            printf("\n✔ Account updated successfully!\n");
+        } else {
+            printf("\n✖ Failed to update account!\n");
+        }
+    }
+    stayOrReturn("\n✖ Record not found!!\n", found, updateAccount, u);
+}
+
+void makeTransaction(struct User u) {
+    struct Record r;
+    int accNum;
+    int found = 0;
+
+    system("clear");
+    accNum = inputInt("\n\t\tEnter account number: ", 0, 99999999);
+
+    found = findAccount(u, accNum, &r);
+    if (found) {
+        printf("\t\t====== Account[%d] from user, %s =====\n\n", accNum, u.name);
+        found = 1;
+        printAccountDeatil(r);
+
+        if (strcmp(r.accTyp, "fixed01") == 0 ||
+            strcmp(r.accTyp, "fixed02") == 0 ||
+            strcmp(r.accTyp, "fixed03") == 0) {
+            printf("\n✖ Transactions not allowed on fixed deposit accounts!\n");
+
+        } else {
             int choice = displayMenu(
-                "Which field do you want to update?",
-                (const char*[]){"Country", "Phone Number"}, 
+                "Select transaction type: ",
+                (const char*[]){"Withdraw", "Deposite"}, 
                 2
             );
 
-            if (choice == 1) {  // Country
-                inputString("\nEnter new country: ", r.country, sizeof(r.country));
-            } else if (choice == 2) {  // Phone
-                r.phone = inputInt("\nEnter new phone number: ", 1000000, 999999999);
+            double max = 1000000.0;
+            if (choice == 1) max = r.amount;
+            double amount = inputDouble("\nEnter amount: $", 0.01, max);
+
+            if (choice == 1) {  // Withdraw
+                r.amount -= amount;
+            } else {  // Deposit
+                r.amount += amount;
             }
 
             if (UpdateAccountToFile(RECORDS, &u, &r)) {
@@ -225,9 +252,7 @@ void updateAccount(struct User u) {
             } else {
                 printf("\n✖ Failed to update account!\n");
             }
-            break;
         }
     }
-    fclose(fp);
-    stayOrReturn(found, checkAccount, u);
+    stayOrReturn("\n✖ Record not found!!\n", found, makeTransaction, u);
 }
