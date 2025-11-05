@@ -19,7 +19,7 @@ void stayOrReturn(char *msg, int notGood, void f(struct User u), struct User u) 
         }
 
     } else {
-        option = inputInt("\nEnter 1 to go to the main menu and 0 to exit: ", 1, 2);
+        option = inputInt("\nEnter 1 to go to the main menu and 0 to exit: ", 0, 1);
         switch (option) {
             case 1:
                 mainMenu(u);
